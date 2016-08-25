@@ -28,7 +28,7 @@ public class HttpServer {
         this.port = port;
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(port,1, InetAddress.getByName("127.0.0.1"));
+            serverSocket = new ServerSocket(port,1);
             System.out.println("端口"+port+" 服务器已经启动了......");
             while(true){
                 Socket socket = null;

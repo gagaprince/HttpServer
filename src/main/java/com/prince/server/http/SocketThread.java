@@ -39,6 +39,7 @@ public class SocketThread extends Thread {
             Request request = this.request;
             Response response = this.response;
 
+            request.parse();
             Servelet servelet = dispatcher.dispatch(request);
             servelet.doGet(request,response);
 
