@@ -1,7 +1,6 @@
 package com.prince.server.http;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -29,7 +28,7 @@ public class Response {
         headMap.put("Date",new Date().toString());
         headMap.put("Content-Type","text/html;charset=utf-8");
         headMap.put("Connection","keep-alive");
-        headMap.put("Cache-Control","private");
+        headMap.put("Cache-Control", "private");
 //        headMap.put("Content-Encoding", "gzip");
     }
 
@@ -81,6 +80,39 @@ public class Response {
             output.write(outStr.toString().getBytes("utf-8"));
             output.flush();
             output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void forward(String path){
+        File f = new File(path);
+        writeHeader();
+        writeFile(f);
+    }
+    private void writeHeader(){
+        StringBuffer outStr = new StringBuffer();
+        outStr.append(giveMeStatus()).append("\r\n");
+        outStr.append(giveMeHeader()).append("\r\n");
+        try {
+            output.write(outStr.toString().getBytes("utf-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void writeFile(File f){
+        try {
+            FileInputStream fileInputStream = new FileInputStream(f);
+            byte[] buf = new byte[1024];
+            int len = 0;
+            while((len=fileInputStream.read(buf))>0){
+                output.write(buf,0,len);
+            }
+            output.flush();
+            output.close();
+            fileInputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
