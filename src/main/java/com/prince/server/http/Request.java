@@ -45,11 +45,11 @@ public class Request {
         } catch (IOException e) {
             e.printStackTrace();
         }finally {
-            try {
-                input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+////                input.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
 //        System.out.println(sb.toString());
 //        System.out.println(sb.length());

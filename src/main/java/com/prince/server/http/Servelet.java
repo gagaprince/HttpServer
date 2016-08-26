@@ -12,5 +12,7 @@ public class Servelet {
         System.out.println(location);
         System.out.println(av);
         System.out.println(path);
+
+        response.out();
     }
 }

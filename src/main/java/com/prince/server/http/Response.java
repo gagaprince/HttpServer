@@ -1,5 +1,6 @@
 package com.prince.server.http;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -7,9 +8,9 @@ import java.util.*;
  * Created by zidong.wang on 2016/8/25.
  */
 public class Response {
-    private int statusCode;
+    private int statusCode = 200;
     private String version = "HTTP/1.1";
-    private String status;
+    private String status = "OK";
 
     private String header;
 
@@ -29,9 +30,11 @@ public class Response {
         headMap.put("Content-Type","text/html;charset=utf-8");
         headMap.put("Connection","keep-alive");
         headMap.put("Cache-Control","private");
-        headMap.put("Content-Encoding", "gzip");
+//        headMap.put("Content-Encoding", "gzip");
+    }
 
-
+    public void setHeader(String key,String value){
+        headMap.put(key,value);
     }
 
     private String giveMeHeader(){
@@ -53,10 +56,34 @@ public class Response {
     private String giveMeContent(){
         return "<html>" +
                 "<head>" +
-                "<title></title>" +
+                "<meta charset=\"UTF-8\">"+
+                "<title>哈哈哈</title>" +
                 "</head>" +
                 "<body>web server test</body>"+
                 "</html>";
+    }
+
+    public OutputStream getOutputStream(){
+        return output;
+    }
+
+    public void out(){
+//        setHeader("Content-Length",giveMeContent().length()+"");
+
+        StringBuffer outStr = new StringBuffer();
+        outStr.append(giveMeStatus()).append("\r\n");
+        outStr.append(giveMeHeader()).append("\r\n");
+        outStr.append(giveMeContent()).append("\r\n");
+
+        System.out.println(outStr.toString());
+
+        try {
+            output.write(outStr.toString().getBytes("utf-8"));
+            output.flush();
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
