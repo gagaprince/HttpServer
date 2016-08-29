@@ -21,7 +21,6 @@ public class HttpServer {
 
     private void initWebApp(){
         WebApplication webApplication = WebApplication.getInstance();
-        webApplication.init();
     }
 
     private void initServer(int port){

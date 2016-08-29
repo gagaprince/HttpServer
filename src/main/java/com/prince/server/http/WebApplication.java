@@ -9,8 +9,11 @@ import java.util.Properties;
  */
 public class WebApplication {
     private String webRoot;
+    private String root;
 
-    private WebApplication(){}
+    private WebApplication(){
+        init();
+    }
     public static WebApplication instance;
     public static WebApplication getInstance(){
         if(instance==null){
@@ -28,10 +31,14 @@ public class WebApplication {
             e.printStackTrace();
         }
         String userDir = pro.getProperty("user.dir");
+        root = userDir;
         this.webRoot = userDir+"webroot/";
     }
 
     public String getWebRoot() {
         return webRoot;
+    }
+    public String getRoot(){
+        return root;
     }
 }
