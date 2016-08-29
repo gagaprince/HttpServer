@@ -1,5 +1,7 @@
 package com.prince.server.http;
 
+import com.prince.server.jsp.CreateJSPFile;
+
 import java.applet.Applet;
 
 /**
@@ -22,7 +24,13 @@ public class Servelet {
             String dirPath = webApplication.getWebRoot()+path+".html";
             response.forward(dirPath);
         }else{
-            response.out();
+            String ext = path.split("\\.")[1];
+            if(ext.equals("jsp")){
+                CreateJSPFile c = new CreateJSPFile();
+                c.parseJsp(path);
+            }else{
+                response.out();
+            }
         }
 
     }

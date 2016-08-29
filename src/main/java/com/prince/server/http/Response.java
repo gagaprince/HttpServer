@@ -74,7 +74,7 @@ public class Response {
         outStr.append(giveMeHeader()).append("\r\n");
         outStr.append(giveMeContent()).append("\r\n");
 
-        System.out.println(outStr.toString());
+//        System.out.println(outStr.toString());
 
         try {
             output.write(outStr.toString().getBytes("utf-8"));

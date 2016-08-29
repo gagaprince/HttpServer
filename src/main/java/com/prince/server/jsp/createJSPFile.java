@@ -4,10 +4,7 @@ import com.prince.server.http.WebApplication;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -27,10 +24,26 @@ public class CreateJSPFile {
     public String giveMeSource(String path){
         StringBuffer sourceSb = new StringBuffer();
         sourceSb.append("package com.prince.server.jsp.temp;").append(br);
-        sourceSb.append("public class test_jsp{").append(br);
+        sourceSb.append("public class ").append(className).append("{").append(br);
         sourceSb.append("   public void out(){").append(br);
-        sourceSb.append("       System.out.println(\"这是一个测试输出！\");").append(br);
-        sourceSb.append("       System.out.println(\"这是一个测试输出1！\");").append(br);
+
+        File jspFile = new File(jspFilePath);
+        BufferedReader bfr = null ;
+        String line = null;
+        try {
+            bfr = new BufferedReader(new FileReader(jspFile));
+            while((line=bfr.readLine())!=null){
+                if(!line.contains("<%")&&!line.contains("%>")){
+                    sourceSb.append("").append(br);
+                }
+
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         sourceSb.append("   }").append(br);
         sourceSb.append("}").append(br);
         return sourceSb.toString();
@@ -39,7 +52,6 @@ public class CreateJSPFile {
     public String createSourceFile(String path){
         String source = giveMeSource(path);
         System.out.println(source);
-//        System.out.println(System.getProperty("user.dir"));
 
         File dirFile = new File(tempFilePath);
         if(!dirFile.exists()){
@@ -97,29 +109,26 @@ public class CreateJSPFile {
         init(path);
         if(!checkClassFile()){
             String sourceFilePath = createSourceFile(path);
-            compiler(sourceFilePath);
+            System.out.println(sourceFilePath);
+//            compiler(sourceFilePath);
         }
-        excute();
+//        excute();
     }
 
     private void init(String path){
         WebApplication webApplication = WebApplication.getInstance();
+        jspFilePath = webApplication.getWebRoot()+path;
         tempFilePath = webApplication.getRoot()+"/jsp/";
         packageName = "com.prince.server.jsp.temp";
         className = path.replace("/","_").replace(".jsp","");
         classAllName = packageName+"."+className;
         classPath = this.getClass().getResource("/").getPath();
-        classFilePath = classPath+packageName.replaceAll(".","/")+"/"+className+".class";
+        classFilePath = classPath+packageName.replaceAll("\\.","/")+"/"+className+".class";
     }
     private boolean checkClassFile(){
+        System.out.println(classFilePath);
         File f = new File(classFilePath);
         return f.exists();
     }
 
-    public static void main(String[] args) {
-        CreateJSPFile c = new CreateJSPFile();
-        String filePath = c.createSourceFile();
-        String className = c.compiler(filePath);
-        c.excute(className);
-    }
 }
