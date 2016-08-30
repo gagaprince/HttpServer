@@ -24,19 +24,25 @@ public class CreateJSPFile {
     public String giveMeSource(String path){
         StringBuffer sourceSb = new StringBuffer();
         sourceSb.append("package com.prince.server.jsp.temp;").append(br);
+        sourceSb.append("import com.prince.server.http.Request;").append(br);
+        sourceSb.append("import com.prince.server.http.Response;").append(br);
+        sourceSb.append("import java.io.IOException;").append(br);
+        sourceSb.append("import java.io.OutputStream;").append(br);
+
         sourceSb.append("public class ").append(className).append("{").append(br);
-        sourceSb.append("   public void out(){").append(br);
+        sourceSb.append("   public void out(Request request,Response response){").append(br);
+        sourceSb.append("       OutputStream out = response.getOutputStream();").append(br);
+        sourceSb.append("       try {").append(br);
 
         File jspFile = new File(jspFilePath);
         BufferedReader bfr = null ;
         String line = null;
         try {
-            bfr = new BufferedReader(new FileReader(jspFile));
+            bfr = new BufferedReader(new InputStreamReader(new FileInputStream(jspFile),"utf-8"));
             while((line=bfr.readLine())!=null){
                 if(!line.contains("<%")&&!line.contains("%>")){
-                    sourceSb.append("").append(br);
+                    sourceSb.append("           out.write(\"").append(line.replace("\"","\\\"")).append("\".getBytes());").append(br);
                 }
-
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -44,6 +50,11 @@ public class CreateJSPFile {
             e.printStackTrace();
         }
 
+        sourceSb.append("           out.flush();").append(br);
+        sourceSb.append("           out.close();").append(br);
+        sourceSb.append("       } catch (IOException e) {").append(br);
+        sourceSb.append("           e.printStackTrace();").append(br);
+        sourceSb.append("       }").append(br);
         sourceSb.append("   }").append(br);
         sourceSb.append("}").append(br);
         return sourceSb.toString();
@@ -118,7 +129,7 @@ public class CreateJSPFile {
     private void init(String path){
         WebApplication webApplication = WebApplication.getInstance();
         jspFilePath = webApplication.getWebRoot()+path;
-        tempFilePath = webApplication.getRoot()+"/jsp/";
+        tempFilePath = System.getProperty("user.dir")+"/src/main/java/com/prince/server/jsp/temp/";
         packageName = "com.prince.server.jsp.temp";
         className = path.replace("/","_").replace(".jsp","");
         classAllName = packageName+"."+className;
