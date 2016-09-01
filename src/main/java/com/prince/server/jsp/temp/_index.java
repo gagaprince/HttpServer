@@ -7,26 +7,11 @@ public class _index{
    public void out(Request request,Response response){
        OutputStream out = response.getOutputStream();
        try {
-           out.write("<!doctype html>".getBytes());
-           out.write("<html lang=\"en\">".getBytes());
-           out.write("<head>".getBytes());
-           out.write("    <meta charset=\"UTF-8\">".getBytes());
-           out.write("    <meta name=\"viewport\" content=\"width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no\" />".getBytes());
-           out.write("    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" /><!-- ÉèÖÃWebÓ¦ÓÃÒÔÈ«ÆÁÄ£Ê½ÔËÐÐ -->".getBytes());
-           out.write("    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" /><!-- Òþ²Ø×´Ì¬À¸ -->".getBytes());
-           out.write("    <meta name=\"format-detection\" content=\"telephone=no\" /><!-- ¸æËßÉè±¸ºöÂÔ½«Ò³ÃæÖÐµÄÊý×ÖÊ¶±ðÎªµç»°ºÅÂë -->".getBytes());
-           out.write("    <title>Ê×Ò³</title>".getBytes());
-           out.write("</head>".getBytes());
-           out.write("<body>".getBytes());
-           out.write("    <p>Ê×Ò³</p>".getBytes());
-           out.write("".getBytes());
-           out.write("<script>".getBytes());
-           out.write("".getBytes());
-           out.write("</script>".getBytes());
-           out.write("".getBytes());
-           out.write("</body>".getBytes());
-           out.write("</html>".getBytes());
-           out.write("".getBytes());
+           out.write("<!doctype html><html lang=\"en\"><head>    <meta charset=\"UTF-8\">    <meta name=\"viewport\" content=\"width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no\" />    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" /><!-- è®¾ç½®Webåº”ç”¨ä»¥å…¨å±æ¨¡å¼è¿è¡Œ -->    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" /><!-- éšè—çŠ¶æ€æ  -->    <meta name=\"format-detection\" content=\"telephone=no\" /><!-- å‘Šè¯‰è®¾å¤‡å¿½ç•¥å°†é¡µé¢ä¸­çš„æ•°å­—è¯†åˆ«ä¸ºç”µè¯å·ç  -->    <title>é¦–é¡µ</title></head><body>  ".getBytes("is0-8859-1"));
+            for(int i=0;i<10;i++){
+           out.write("    <p>é¦–é¡µ</p>  ".getBytes("is0-8859-1"));
+           }
+           out.write("<script></script></body></html>".getBytes("is0-8859-1"));
            out.flush();
            out.close();
        } catch (IOException e) {

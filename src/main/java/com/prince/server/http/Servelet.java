@@ -27,7 +27,7 @@ public class Servelet {
             String ext = path.split("\\.")[1];
             if(ext.equals("jsp")){
                 CreateJSPFile c = new CreateJSPFile();
-                c.parseJsp(path);
+                c.parseJsp(path,request,response);
             }else{
                 response.out();
             }

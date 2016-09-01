@@ -1,5 +1,7 @@
 package com.prince.server.jsp;
 
+import com.prince.server.http.Request;
+import com.prince.server.http.Response;
 import com.prince.server.http.WebApplication;
 
 import javax.tools.JavaCompiler;
@@ -7,6 +9,8 @@ import javax.tools.ToolProvider;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by gagaprince on 16-8-27.
@@ -35,20 +39,24 @@ public class CreateJSPFile {
         sourceSb.append("       try {").append(br);
 
         File jspFile = new File(jspFilePath);
-        BufferedReader bfr = null ;
-        String line = null;
-        try {
-            bfr = new BufferedReader(new InputStreamReader(new FileInputStream(jspFile),"utf-8"));
-            while((line=bfr.readLine())!=null){
-                if(!line.contains("<%")&&!line.contains("%>")){
-                    sourceSb.append("           out.write(\"").append(line.replace("\"","\\\"")).append("\".getBytes());").append(br);
-                }
+        String content = giveMeFileContent(jspFile);
+
+        String regEx = "<%(.+?)%>";
+        String[] normalStrings = content.split("<%(.+?)%>");
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(content);
+
+        for(int i=0;i<normalStrings.length;i++){
+//            System.out.println(normalStrings[i]);
+            sourceSb.append("           out.write(\"").append(normalStrings[i].replace("\"", "\\\"")).append("\".getBytes(\"is0-8859-1\"));").append(br);
+            if(matcher.find()){
+                String matchStr = matcher.group(1);
+//                System.out.println(matchStr);
+                sourceSb.append("           ").append(matchStr).append(br);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+//        sourceSb.append("           out.write(\"").append(content.replace("\"","\\\"")).append("\".getBytes());").append(br);
 
         sourceSb.append("           out.flush();").append(br);
         sourceSb.append("           out.close();").append(br);
@@ -57,6 +65,24 @@ public class CreateJSPFile {
         sourceSb.append("       }").append(br);
         sourceSb.append("   }").append(br);
         sourceSb.append("}").append(br);
+        return sourceSb.toString();
+    }
+
+    private String giveMeFileContent(File jspFile){
+        StringBuffer sourceSb = new StringBuffer();
+        BufferedReader bfr = null ;
+        String line = null;
+        try {
+            bfr = new BufferedReader(new InputStreamReader(new FileInputStream(jspFile),"utf-8"));
+            while((line=bfr.readLine())!=null){
+                sourceSb.append(line);
+            }
+            bfr.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return sourceSb.toString();
     }
 
@@ -79,15 +105,15 @@ public class CreateJSPFile {
         int result = javaCompiler.run(null,null,null,"-d",classPath,path);
         System.out.println(classPath);
         System.out.println("result:" + result);
-        return "com.prince.server.jsp.temp.test_jsp";
+        return classAllName;
     }
 
-    public void excute(String className){
+    public void excute(Request request,Response response){
         try {
-            Object jsp = Class.forName(className).newInstance();
+            Object jsp = Class.forName(classAllName).newInstance();
             Class jspClass = jsp.getClass();
-            Method out = jspClass.getMethod("out");
-            out.invoke(jsp);
+            Method out = jspClass.getMethod("out",request.getClass(),response.getClass());
+            out.invoke(jsp,request,response);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -104,7 +130,7 @@ public class CreateJSPFile {
     private void writeToFile(File f,String source){
         try {
             FileOutputStream fos = new FileOutputStream(f);
-            fos.write(source.getBytes());
+            fos.write(source.getBytes("utf-8"));
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
@@ -115,15 +141,15 @@ public class CreateJSPFile {
 
     }
 
-    public void parseJsp(String path){
+    public void parseJsp(String path,Request request,Response response){
         //path 类似 a/index.jsp
         init(path);
-        if(!checkClassFile()){
+//        if(!checkClassFile()){
             String sourceFilePath = createSourceFile(path);
             System.out.println(sourceFilePath);
-//            compiler(sourceFilePath);
-        }
-//        excute();
+            compiler(sourceFilePath);
+//        }
+        excute(request,response);
     }
 
     private void init(String path){
