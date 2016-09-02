@@ -48,11 +48,17 @@ public class CreateJSPFile {
 
         for(int i=0;i<normalStrings.length;i++){
 //            System.out.println(normalStrings[i]);
-            sourceSb.append("           out.write(\"").append(normalStrings[i].replace("\"", "\\\"")).append("\".getBytes(\"is0-8859-1\"));").append(br);
+            sourceSb.append("           out.write(\"").append(normalStrings[i].replace("\"", "\\\"")).append("\".getBytes(\"utf-8\"));").append(br);
             if(matcher.find()){
                 String matchStr = matcher.group(1);
 //                System.out.println(matchStr);
-                sourceSb.append("           ").append(matchStr).append(br);
+                if(matchStr.startsWith("=")){
+                    matchStr = matchStr.substring(1);
+                    sourceSb.append("           out.write((").append(matchStr).append("+\"\").getBytes(\"utf-8\"));").append(br);
+                }else{
+                    sourceSb.append("           ").append(matchStr).append(br);
+                }
+
             }
         }
 
@@ -130,7 +136,7 @@ public class CreateJSPFile {
     private void writeToFile(File f,String source){
         try {
             FileOutputStream fos = new FileOutputStream(f);
-            fos.write(source.getBytes("utf-8"));
+            fos.write(source.getBytes("gbk"));
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {

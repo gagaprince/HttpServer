@@ -7,11 +7,13 @@ public class _index{
    public void out(Request request,Response response){
        OutputStream out = response.getOutputStream();
        try {
-           out.write("<!doctype html><html lang=\"en\"><head>    <meta charset=\"UTF-8\">    <meta name=\"viewport\" content=\"width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no\" />    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" /><!-- è®¾ç½®Webåº”ç”¨ä»¥å…¨å±æ¨¡å¼è¿è¡Œ -->    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" /><!-- éšè—çŠ¶æ€æ  -->    <meta name=\"format-detection\" content=\"telephone=no\" /><!-- å‘Šè¯‰è®¾å¤‡å¿½ç•¥å°†é¡µé¢ä¸­çš„æ•°å­—è¯†åˆ«ä¸ºç”µè¯å·ç  -->    <title>é¦–é¡µ</title></head><body>  ".getBytes("is0-8859-1"));
+           out.write("<!doctype html><html lang=\"en\"><head>    <meta charset=\"UTF-8\">    <meta name=\"viewport\" content=\"width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no\" />    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" /><!-- ÉèÖÃWebÓ¦ÓÃÒÔÈ«ÆÁÄ£Ê½ÔËÐÐ -->    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black\" /><!-- Òþ²Ø×´Ì¬À¸ -->    <meta name=\"format-detection\" content=\"telephone=no\" /><!-- ¸æËßÉè±¸ºöÂÔ½«Ò³ÃæÖÐµÄÊý×ÖÊ¶±ðÎªµç»°ºÅÂë -->    <title>Ê×Ò³</title></head><body>  ".getBytes("utf-8"));
             for(int i=0;i<10;i++){
-           out.write("    <p>é¦–é¡µ</p>  ".getBytes("is0-8859-1"));
+           out.write("    <p>Ê×Ò³".getBytes("utf-8"));
+           out.write((i+"").getBytes("utf-8"));
+           out.write("</p>  ".getBytes("utf-8"));
            }
-           out.write("<script></script></body></html>".getBytes("is0-8859-1"));
+           out.write("<script></script></body></html>".getBytes("utf-8"));
            out.flush();
            out.close();
        } catch (IOException e) {
